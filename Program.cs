@@ -25,17 +25,23 @@ namespace gNotify {
             configurationBuilder.AddJsonFile ("config.json", optional : false, reloadOnChange : false);
             Configuration = configurationBuilder.Build ();
 
-            var unreadCount = GetUnreadCount ();
-
-            if (unreadCount > 0) {
-                DisplayNotification (unreadCount);
-            }
-
             Application.Run ();
         }
 
+        private static void Loop () {
+            while (true) {
+                var unreadCount = GetUnreadCount ();
+
+                if (unreadCount > 0) {
+                    DisplayNotification (unreadCount);
+                }
+
+                System.Threading.Thread.Sleep (153089);
+            }
+        }
+
         /// <summary>Display icon and notification in tray</summary>
-        static void DisplayNotification (int unreadCount) {
+        private static void DisplayNotification (int unreadCount) {
             var notifyIcon = new NotifyIcon ();
 
             notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
@@ -53,7 +59,7 @@ namespace gNotify {
         }
 
         /// <summary>Get path to system default browser</summary>
-        static string GetSystemDefaultBrowser () {
+        private static string GetSystemDefaultBrowser () {
             string name = string.Empty;
             RegistryKey regKey = null;
 
@@ -79,7 +85,7 @@ namespace gNotify {
 
         /// <summary>Get number of unread mails in account</summary>
         /// <returns>Number of unread mails</returns>
-        static int GetUnreadCount () {
+        private static int GetUnreadCount () {
             var client = new ImapClient ();
             client.Connect ("imap.gmail.com", 993, true);
             client.Authenticate (Configuration["gmail_login"], Configuration["gmail_password"]);
@@ -96,10 +102,10 @@ namespace gNotify {
 
         /// <summary>Put browser window to foreground</summary>
         /// <remarks>unfinished</remarks>
-        static void moveBrowserWindow () {
+        private static void moveBrowserWindow () {
             var browserExecutablePath = GetSystemDefaultBrowser ();
-            Process[] processes = Process.GetProcesses();
-            Console.WriteLine();
+            Process[] processes = Process.GetProcesses ();
+            Console.WriteLine ();
         }
 
         /// <summary>Open given URL in browser window</summary>
